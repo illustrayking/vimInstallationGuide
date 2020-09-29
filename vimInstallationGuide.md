@@ -105,5 +105,138 @@ sudo snap install vim-editor --beta
 ```
 </div>
 
+## اما چطور یک ویم رو از ابتدا build کنیم
+
+در لینوکس شما این قابلیت رو دارید که خودتون یک ابزار رو از ابتدا `make` کنید در اصطلاح 
+
+اما چرا ما نیاز داریم از ابتدا خودمون ویم رو بسازیم؟
+
+بعضی اوقات ممکن هست که نتونیم از طریق `package manager` که ابزار مورد نظر رو برای توزیع ما بهینه کرده دسترسی داشته باشیم مثلا یکی از اون دلایل ها این هست که برنامه نویس مورد نظر برای توزیع ما اون رو نساخته به همین دلیل من خودم میتونم با در دسترس داشتن به فایل سورس شروع به بیلد کردن بکنم و برای توزیع خودم اون رو بالا بیارم
+
+برای اینکار ابتدا وارد این وب سایت بشید
+
+<div dir="ltr">
+
+**[BUILDING VIM FROM SOURCE](https://github.com/ycm-core/YouCompleteMe/wiki/Building-Vim-from-source)**
+</div>
+
+ابتدا پکیج هایی که برای ساخت ویم نیاز هست رو باید نصب کنیم
+
+نکته ای رو که باید بگم این هست که در پیج بالا سه پکیج رو در اختیار گذاشته که نیازی به نصب نیست چون در اوبونتو 20 به بعد اینها منتقضی شده اندا اما باز هم اگر قابل نصب بودند شما اون رو نصب کنید اما اگر نبودند دستور پایینی که در احتیارتون گذاشتم رو نصب کنید
+
+<div dir="ltr">
+
+```
+libgnome2-dev libgnomeui-dev libbonoboui2-dev
+```
 
 </div>
+
+سه پکیج بالا منقضی شده اند و نیازی به نصب نیست
+
+<div dir="ltr">
+
+```
+sudo apt install libncurses5-dev \
+libgtk2.0-dev libatk1.0-dev \
+libcairo2-dev libx11-dev libxpm-dev libxt-dev python-dev \
+python3-dev ruby-dev lua5.2 liblua5.2-dev libperl-dev git
+```
+</div>
+
+اما اگر در فدورا هستید به شیوه زیر پکیج های مورد نیاز رو نصب کنید
+
+<div dir="ltr">
+
+```
+sudo yum install -y ruby ruby-devel lua lua-devel luajit \
+luajit-devel ctags git python python-devel \
+python3 python3-devel tcl-devel \
+perl perl-devel perl-ExtUtils-ParseXS \
+perl-ExtUtils-XSpp perl-ExtUtils-CBuilder \
+perl-ExtUtils-Embed
+```
+</div>
+
+حالا در فدورا باید یک `symlink` از `xsubpp` به دایرکتوری `perl` ایجاد کنیم
+
+<div dir="ltr">
+
+```
+sudo ln -s /usr/bin/xsubpp /usr/share/perl5/ExtUtils/xsubpp 
+```
+</div>
+
+خب حالا اقدام به نصب میکنیم و بعد شروع به `build` کردن ویم میکنیم
+
+ابتدا وارد دایرکتوری `HOME` میشید و بعد توسط دستور زیر ویم رو کلون میکنیم
+
+<div dir="ltr">
+
+```
+cd ~/
+
+git clone https://github.com/vim/vim.git
+```
+</div>
+
+دستور زیر رو اجرا میکنیم
+
+<div dir="ltr">
+
+```
+ ./configure --prefix=/usr/localonfigure --with-features=huge \
+             --enable-multibyte \
+	     --enable-rubyinterp=yes \
+             --enable-python3interp=yes \
+             --with-python3-config-dir=$(python3-config --configdir) \
+             --enable-perlinterp=yes \
+             --enable-luainterp=yes \
+             --enable-gui=gtk2 \
+             --enable-cscope \
+             --prefix=/usr/local
+```	    
+</div>
+
+و در قدم بعد
+
+<div dir="ltr">
+
+```
+make VIMRUNTIMEDIR=/usr/local/share/vim/vim82
+```
+</div>
+
+و در نهایت شروع به `make` کردن میکنیم
+
+<div dir="ltr">
+
+```
+sudo make install
+```
+</div>
+
+خب حالا اگر اخطاری نداده باشه ویم شما نصب هست کافی هست که یکبار دستور زیر رو اجرا کنید و ببینید نصب شده یا نه
+
+<div dir="ltr">
+
+```
+vim --version
+```
+</div>
+
+اگر میخواهید که ویم ادیتور دیفالت شما باشه از دستورات زیر استفاده کنید
+
+<div dir="ltr">
+
+```
+sudo update-alternatives --install /usr/bin/editor editor /usr/local/bin/vim 1
+sudo update-alternatives --set editor /usr/local/bin/vim
+sudo update-alternatives --install /usr/bin/vi vi /usr/local/bin/vim 1
+sudo update-alternatives --set vi /usr/local/bin/vim
+```
+</div>
+
+خب الان تونستیم بفهمیم که چطور از ابتدا یک ویم رو بسازیم
+
+ اگر باز هم به مشکل خوردید به لینک بالایی برید و تمام دستورات رو یکبار مرور کنید من خودم اینطوری تونستم
